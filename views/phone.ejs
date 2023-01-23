@@ -1,0 +1,310 @@
+<%- include ('partials/header'); -%>
+
+<nav class="navbar navbar-expand-lg navbar-light">
+	<div class="container">
+		<a href="/">
+			<div class="navbar-brand">Foodie</div>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-ellipsis-v" ></span>
+    </button>
+  	<div class="collapse navbar-collapse" id="navbarNav">
+  	  <div class="navbar-nav  ml-auto mt-2 mt-lg-0">
+  	  	<% if(currentUser){ %>
+  	  		<a class="nav-link active" href="/user/<%= currentUser._id %>">Hello <%= currentUser.username %></a>
+  		  <% } %>
+        <% if(currentUser && currentUser.isAdmin){ %>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-toggle="modal" data-target="#showuser">
+            Users
+          </a>
+        </li>
+        <% } %>
+  		  <a class="nav-link" href="/">Home</a>
+  		  <% if(!currentUser){ %>
+  		    <a class="nav-link" href="/user">Login</a>
+  		  <% } else { %>
+  		  	<a class="nav-link" href="/logout">Logout</a>
+  		  <% } %>
+  		</div>
+  	</div>
+	</div>
+</nav>
+
+<div class="modal fade" id="showuser" tabindex="-1" role="dialog" aria-labelledby="mymodal1Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLabel">All Users</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <% user.forEach(function(data){ %>
+          <div class="row">
+            <div class="col-md-6 col-6">
+              <h6 style="text-align: center;">
+                <a href="/user/<%= data.id %>" style="color:rgb(60,60,60);"><%= data.name %></a>
+              </h6>
+            </div>
+            <div class="col-md-6 col-6">
+              <h6 style="float: left;">| <%= moment(data.joined).format("LL") %></h6><br>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="navbar mynav2">
+<div class="container">
+  <% if(error && error.length > 0){ %>
+    <div class="alert alert-danger" role="alert">
+      <button type="button" data-dismiss="alert" aria-label="Close" class="close" style="outline:none;">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <%= error %>
+    </div>
+  <% } %>
+  <% if(success && success.length > 0){ %>
+    <div class="alert alert-success" role="alert">
+      <button type="button" data-dismiss="alert" aria-label="Close" class="close" style="outline:none;">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <%= success %>
+    </div>
+  <% } %>
+</div>
+</nav>
+
+<div class="box1" data-scroll-speed="6">
+	<div id="overlay"></div>
+	<h1>Restaurants In Basoda</h1>
+	<form class="searchFormMain" action="/phone" method="GET">
+		<input class="btnMain" type="text" name="search" placeholder="Search here..." aria-label="Search" autocomplete="on">
+		<button class="btn btn-secondary btnMain" type="submit" value="Search"><i class="fa fa-search fa-fw"></i></button>
+	</form>
+</div>
+
+<div class="container main">
+
+	<div class="box2">
+		<div class="row">
+			<div class="col-md-7 col-12">
+				<!-- <h2>Restaurants in Basoda</h2> -->
+				<h3>Rate For What You Like</h3>
+				<h5>And With Lots Of Dishes <span id="textvanish1">, With Lots Of Choices,</span> Look For Restaurants In Your Locality</h5>
+			</div>
+			<div class="col-md-5 col-12">
+				<button class="btn btn-secondary" data-toggle="modal" data-target="#mymodal1">Search For Shops</button><br>
+				<a href="#bestpost">
+					<button class="btn btn-secondary">Suggest For Best</button>
+				</a>
+				<br>
+				<a href="/shoppost">
+					<button class="btn btn-secondary">Add New Dish <i class="fa fa-utensils fa-fw"></i></button>
+				</a>
+			</div>
+		</div>
+	</div>
+	<br>
+
+	<div id="mydrop1">
+		<form class="sortForm" action="/phone" method="GET" style="display: inline;">
+    	    <input type="text" name="sortby" value="new" class="d-none">
+    	    <button type="submit" class="btn btn-secondary btnMain">Recent</button>
+    	</form>
+    	<form class="sortForm" action="/phone" method="GET" style="display: inline;">
+    	    <input type="text" name="sortby" value="old" class="d-none">
+    	    <button type="submit" class="btn btn-secondary btnMain">Oldest</button>
+    	</form>
+    	<form class="sortForm" action="/phone" method="GET" style="display: inline;">
+    	   <input type="text" name="sortby" value="mostrated" class="d-none">
+    	   <button type="submit" class="btn btn-secondary btnMain">Top Rated</button>
+    	</form>
+    	<form class="sortForm" action="/phone" method="GET" style="display: inline;">
+    	   <input type="text" name="sortby" value="leastrated" class="d-none">
+    	   <button type="submit" class="btn btn-secondary btnMain">least Rated</button>
+    	</form>
+    	<form class="sortForm" action="/phone" method="GET" style="display: inline;">
+    	    <input type="text" name="sortby" value="rateCount" class="d-none">
+    	    <button type="submit" class="btn btn-secondary btnMain">Most Reviewed</button>
+    	</form>
+	</div>
+	<div class="dropdown" id="mydrop2">
+  		<button class="btn btn-secondary btnMain" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    		<i class="fa fa-exchange-alt" style="transform: rotateZ(90deg);"></i>
+  		</button>
+  		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+  			<form action="/phone" method="GET" class="dropdown-item">
+    			<input type="text" name="sortby" value="new" class="d-none">
+    			<button type="submit" class="btn">Recent</button>
+  			</form>
+    		<form action="/phone" method="GET" class="dropdown-item">
+    		    <input type="text" name="sortby" value="old" class="d-none">
+    		    <button type="submit" class="btn">Oldest</button>
+    		</form>
+    		<form action="/phone" method="GET" class="dropdown-item">
+    		   	<input type="text" name="sortby" value="mostrated" class="d-none">
+    		   	<button type="submit" class="btn">Top Rated</button>
+    		</form>
+    		<form action="/phone" method="GET" class="dropdown-item">
+    		   	<input type="text" name="sortby" value="leastrated" class="d-none">
+    		   	<button type="submit" class="btn">least Rated</button>
+    		</form>
+    		<form action="/phone" method="GET" class="dropdown-item">
+    		    <input type="text" name="sortby" value="rateCount" class="d-none">
+    		    <button type="submit" class="btn">Most Reviewed</button>
+    		</form>
+  		</div>
+	</div>
+
+    <% if(shop.shopCount > 0){ %>
+    <h5 id="shopCount" style="float: right;">
+    	<% if(shop.shopCount == 1){ %>
+    		<%= shop.shopCount %> dish
+    	<% }else{ %>
+    		<%= shop.shopCount %> dishes
+    	<% } %>
+    </h5>
+    <% } %>
+    <a href="/shoppost">
+    	<button type="submit" class="btn btn-secondary btnMain">
+    		<i class="fa fa-plus fa-fw"></i>
+    	</button>
+    </a>
+	<!-- <form class="searchform" action="/phone" method="GET">
+		<input class="btnMain" type="text" name="search" placeholder="Search for anything" aria-label="Search" autocomplete="on">
+		<button class="btn btn-secondary btnMain" type="submit" value="Search"><i class="fa fa-search fa-fw"></i></button>
+	</form> -->
+	<div id="shopCount" style="float: right;">
+		<% if(noMatch == 1){ %>
+			<h5><%= noMatch %> shop</h5>
+		<% }else if(noMatch > 1){ %>
+			<h5><%= noMatch %> shops</h5>
+		<% }else{ %>
+    		<h5><%= noMatch %></h5>
+    	<% } %>
+	</div>
+
+	<div class="box3" id="bestpost">
+		<div class="row" id="searchbox">
+			<% shop.forEach(function(data){ %>
+			<div class="col-md-2 col-6">
+				<div class="card shadow">
+					<div style="padding:0px 0px 3px 0px;">
+						<a href="/phone/<%= data._id %>/">
+							<div class="card imgcard" style="background-image: url('<%=data.image%>');"></div>
+						</a>
+						<div style="padding: 0px 5px 5px 5px;">
+							<h6 style="text-align: center;">
+								<a href="/phone/<%= data._id %>/" style="color: black;">
+									<%= data.dishName %>
+								</a>
+							</h6>
+							<hr style="margin: 6px 0px 8px 0px;">
+							<h6>
+								<i class="fa fa-rupee fa-fw"></i><%= data.dishPrice %> + <%= data.author.delivery %>
+								<span style="float: right;padding-right: 10px;" type="button" data-container="body" data-toggle="popover" data-placement="bottom" data-content="+91 - <a href='tel:<%= data.author.number %>'><%= data.author.number %></a>">
+									| <i class="fas fa-phone"></i>
+								</span>
+							</h6>
+							<h6 class="badge"><i class="fa fa-map-marker-alt"></i> <a href="/user/<%= data.author.id %>/" style="color:black;"><%= data.author.shopName %></a></h6>
+							<!-- <h6><i class="fa fa-phone fa-fw"></i> <a href="tel:<%= data.author.number %>"><%= data.author.number %></a></h6> -->
+						</div>
+						<hr style="margin: 0px 0px 0px 0px;">
+						<div style="text-align: center;">
+        			  		<form action="/phone/<%= data._id %>/like" method="POST" style="display: inline;">
+        			      		<div class="btn-group">
+        			        	  	<% if (currentUser && data.likes.some(function (like) {
+        			        	  	    return like.equals(currentUser._id)
+        			        	  	})) { %>
+        			        	  	<button class="btn btn-sm btn-primary">
+        			        	  	    <h6 class="badge"><i class="fas fa-thumbs-up" style="color:blue;"></i> <%= data.likes.length %></h6>
+        			        	  	</button>
+        			        	  	<% } else { %>
+        			        	  	<button class="btn btn-sm btn-secondary">
+        			        	  	    <h6 class="badge"><i class="fas fa-thumbs-up"></i> <%= data.likes.length %></h6>
+        			        	  	</button>
+        			        	  	<% } %>
+        			      		</div>
+        			  		</form>
+        			  		<form action="/phone/<%= data._id %>/dislike" method="POST" style="display: inline;">
+        			      		<div class="btn-group">
+        			          		<% if (currentUser && data.dislikes.some(function (dislike) {
+        			          		    return dislike.equals(currentUser._id)
+        			          		})) { %>
+        			          		<button class="btn btn-sm btn-primary">
+        			          		    <h6 class="badge"><i class="fas fa-thumbs-down" style="color: red;"></i> <%= data.dislikes.length %></h6>
+        			          		</button>
+        			          		<% } else { %>
+        			          		<button class="btn btn-sm btn-secondary">
+        			          		    <h6 class="badge"><i class="fas fa-thumbs-down"></i> <%= data.dislikes.length %></h6>
+        			          		</button>
+        			          		<% } %>
+        			      		</div>
+        			  		</form>
+        			  	<% if(currentUser && data.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+        			  		<form class="delete-form" action="/phone/<%= data._id %>?_method=DELETE" method="POST" style="display: inline;">
+            					<button type="submit" class="close" value="Delete" style="outline:none;padding:0px 10px 0px 0px;">
+                    				<span>&times;</span>
+                  				</button>
+            		  		</form>
+            		  	<% } %>
+        				</div>
+					</div>
+				</div>
+			</div>
+			<% }); %>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="mymodal1" tabindex="-1" aria-labelledby="mymodal1Label" aria-hidden="true">
+  <div class="modal-dialog" style="z-index: 1000;min-width: 70%;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Food Shops in Basoda</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="z-index: 1000;">
+        <div class="row">
+        	<% user.forEach(function(data){ %>
+        	<% if(data.shopName!=""){ %>
+        	<div class="col-md-3 col-12">
+        		<div class="card shadow" style="background: rgb(<%= Math.floor((Math.random() * 255) + 180); %>,<%= Math.floor((Math.random() * 255) + 180); %>,<%= Math.floor((Math.random() * 255) + 180); %>);border:none;margin-bottom: 20px;">
+        			<div class="c1" style="padding: 5px;text-align: center;">
+        				<h5><%= data.shopName %></h5>
+        				<hr style="margin: 5px;">
+        				<h6><%= data.name %> | <i class="fa fa-rupee" style="font-size: 13px;"></i> <%= data.delivery %> <i class="fa fa-shipping-fast fa-fw" style="font-size: 13px;"></i></h6>
+        				<h6><i class="fa fa-phone fa-fw" style="font-size: 12px;"></i> <%= data.number %></h6>
+        				<hr style="margin: 5px;">
+        				<a href="/user/<%= data.id %>/" style="color: black;"><h6>Open Shop <i class="fa fa-arrow-circle-right fa-fw"></i></h6></a>
+        			</div>
+        		</div>
+        	</div>
+        	<% } %>
+        	<% }); %>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function () {
+  $('[data-toggle="popover"]').popover({
+  	html:true,
+  });
+});
+</script>
+<script type="text/javascript" src="/js/scrollelement.js"></script>
+
+<%- include ('partials/footer'); -%>

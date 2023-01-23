@@ -1,0 +1,231 @@
+<%- include ('partials/header'); -%>
+
+<nav class="navbar navbar-expand-lg fixed-top navbar-light">
+  <div class="container">
+    <a href="/">
+      <div class="navbar-brand">Foodie</div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-ellipsis-v" ></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="navbar-nav  ml-auto mt-2 mt-lg-0">
+        <% if(currentUser){ %>
+          <a class="nav-link active" href="/user/<%= currentUser._id %>">Hello <%= currentUser.username %></a>
+        <% } %>
+        <a class="nav-link" href="/">Home</a>
+        <% if(!currentUser){ %>
+          <a class="nav-link" href="/user">Login</a>
+        <% } else { %>
+          <a class="nav-link" href="/logout">Logout</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<nav class="navbar mynav2">
+<div class="container">
+  <% if(error && error.length > 0){ %>
+    <div class="alert alert-danger" role="alert">
+      <button type="button" data-dismiss="alert" aria-label="Close" class="close" style="outline:none;">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <%= error %>
+    </div>
+  <% } %>
+  <% if(success && success.length > 0){ %>
+    <div class="alert alert-success" role="alert">
+      <button type="button" data-dismiss="alert" aria-label="Close" class="close" style="outline:none;">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <%= success %>
+    </div>
+  <% } %>
+</div>
+</nav>
+
+  <div class="container mt-4 myusershow" style="padding-top: 10vh;">    
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-3">
+      <div style="position: sticky;top:70px;">
+        <div id="profilePicture" class="card shadow-sm d-none d-md-block"> 
+            <div class="card-body">
+                <h5 class="card-title text-capitalize"><%= user.shopName %></h5>
+                <h6 class="card-subtitle text-muted">                
+                  <% if (shop.length === 1) { %>
+                    <%= shop.length %> Dish
+                  <% } else { %>
+                    <%= shop.length %> Dishes
+                  <% } %>
+                </h6> 
+            </div>        
+        </div>
+        <div class="d-block d-sm-none d-none d-sm-block d-md-none mx-auto">
+          <div class="row">
+            <div class="col-8">
+              <div id="profilePicture" class="card shadow-sm" >                  
+                <div class="card-body">
+                  <h5 class="card-title text-capitalize"><%= user.shopName %></h5>
+                  <h6 class="card-subtitle text-muted">                    
+                    <% if (shop.length === 1) { %>
+                      <%= shop.length %> Dish
+                    <% } else { %>
+                      <%= shop.length %> Dishes
+                    <% } %>
+                  </h6> 
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+       
+        <div class="card shadow-sm mt-3 mb-3">
+          <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <span class="text-muted"><i class="fa fa-user fa-fw"></i> <%= user.name %></span>          
+              </li>   
+              <li class="list-group-item">
+                <span class="text-muted"><i class="fa fa-phone fa-fw"></i> 
+                  <a href="tel:<%= user.number %>" style="color:rgb(40,40,40);">
+                    <%= user.number %>
+                  </a>
+                </span>             
+              </li>       
+              <li class="list-group-item">
+                <strong>Joined: </strong><span class="text-muted"><%= moment(user.joined).format('LL') %> </span>             
+              </li>     
+              <% if (currentUser && user._id.equals(currentUser._id) || currentUser && currentUser.isAdmin) { %> 
+              <% if(user.shopName!=""){ %>
+              <li class="list-group-item" style="text-align: center;">
+                <a href="/shoppost"><button class="btn btn-secondary"><i class="fa fa-utensils fa-fw"></i> Add New Dish <i class="fa fa-plus fa-fw"></i></button></a>          
+              </li>
+              <% } else { %>
+              <% } %>        
+              <li class="list-group-item d-flex justify-content-center">
+                <a class="btn btn-warning btn-sm float-left mr-1" href="/user/<%= user._id %>/edit">Edit Profile</a>
+                <form class="float-left" action="/user/<%= user._id %>?_method=DELETE" method="POST">
+                  <button type="submit" class="btn btn-danger btn-sm">Delete Account</button>
+                </form>
+              </li>
+              <% } %>             
+          </ul>
+        </div>
+        <div class="card shadow-sm mt-3 mb-3">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" style="padding: 0px;text-align: center;">
+              <% if(user.menuImage==""){ %>
+              No Menu Yet
+              <% } else { %>
+              <a href="<%= user.menuImage %>">
+                <img src="<%= user.menuImage %>" style="width:100%;">
+              </a>
+              <% } %>          
+            </li>
+          </ul>
+        </div>
+      </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-9" style="margin-top: 20px;">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="tab12" data-toggle="pill" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Dishes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="tab22" data-toggle="pill" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Comments</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+          <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab12">
+         
+        <div class="row mylikedislike">          
+          <% shop.forEach(function(data) { %>
+            <div class="col-6 col-lg-3">
+              <div class="card shadow-sm">
+                <a href="/phone/<%= data._id %>">
+                  <img id="dishCard" class="card-img-top" src="<%= data.image %>">
+                </a> 
+                <div style="padding: 5px;">
+                  <h5><a href="/phone/<%= data._id %>" style="color:black"><%= data.dishName %></a></h5>
+                    <h6><i class="fa fa-rupee fa-fw"></i><%= data.dishPrice %> + <%= data.author.delivery %></h6>
+                    <hr style="margin: 0px 0px 8px 0px;">
+                      <div style="text-align: center;">
+                    <form action="/phone/<%= data._id %>/like" method="POST" style="display: inline;">
+                        <div class="btn-group">
+                            <% if (currentUser && data.likes.some(function (like) {
+                                return like.equals(currentUser._id)
+                            })) { %>
+                            <button class="btn btn-sm btn-primary">
+                                <h6><i class="fas fa-thumbs-up" style="color:blue;"></i> <%= data.likes.length %></h6>
+                            </button>
+                            <% } else { %>
+                            <button class="btn btn-sm btn-secondary">
+                                <h6><i class="fas fa-thumbs-up"></i> <%= data.likes.length %></h6>
+                            </button>
+                            <% } %>
+                        </div>
+                    </form>
+                    <form action="/phone/<%= data._id %>/dislike" method="POST" style="display: inline;">
+                        <div class="btn-group">
+                            <% if (currentUser && data.dislikes.some(function (dislike) {
+                                return dislike.equals(currentUser._id)
+                            })) { %>
+                            <button class="btn btn-sm btn-primary">
+                                <h6><i class="fas fa-thumbs-down" style="color: red;"></i> <%= data.dislikes.length %></h6>
+                            </button>
+                            <% } else { %>
+                            <button class="btn btn-sm btn-secondary">
+                                <h6><i class="fas fa-thumbs-down"></i> <%= data.dislikes.length %></h6>
+                            </button>
+                            <% } %>
+                        </div>
+                    </form>
+                  <% if(currentUser && data.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+                    <form class="delete-form" action="/phone/<%= data._id %>?_method=DELETE" method="POST" style="display: inline;">
+                      <button type="submit" class="close" value="Delete" style="outline:none;padding:0px 10px 0px 0px;">
+                            <span>&times;</span>
+                          </button>
+                      </form>
+                    <% } %>
+                </div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+          </div>
+          <div class="tab-pane fade show" id="tab2" role="tabpanel" aria-labelledby="tab22">
+        <form class="inform1" action="/user/<%= user._id %>/comments" method="POST" style="width: 95%;margin:auto;">
+          <div class="row">
+            <input id="inputform" class="form-control col-md-10 col-12" type="text" name="comment[text]" placeholder="Comment here..." style="box-shadow: none;">
+            <button class="btn btn-secondary col-md-2 col-12 inverted" type="submit">Post</button>
+          </div>
+        </form>
+        <div class="well" style="margin-top:20px;">
+        <% user.comments.forEach(function(comment){ %>
+          <div class="col-md-12">
+            <strong><%= comment.author.username %> </strong>
+            <span class="incomment" style="float: right;">
+              <%= moment(comment.createdAt).fromNow() %> <br>
+              <% if(currentUser && comment.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+                <form class="delete-form" action="/user/<%=user._id%>/comments/<%=comment._id%>?_method=DELETE" method="POST">
+                  <button type="submit" class="close" value="Delete" style="outline:none;">
+                    <span>&times;</span>
+                  </button>
+                </form>
+              <% } %>
+            </span>
+            <p>
+              <%= comment.text %>
+            </p>
+          </div>
+        <% }); %>
+        </div>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+
+<%- include ('partials/footer'); -%>

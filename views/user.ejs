@@ -1,0 +1,128 @@
+<%- include ('partials/header'); -%>
+
+<nav class="navbar navbar-expand-lg navbar-light">
+	<div class="container">
+		<a href="/">
+			<div class="navbar-brand">Foodie</div>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-ellipsis-v" ></span>
+    </button>
+  	<div class="collapse navbar-collapse" id="navbarNav">
+  	  <div class="navbar-nav  ml-auto mt-2 mt-lg-0">
+  	  	<% if(currentUser){ %>
+  	  		<a class="nav-link active" href="/user/<%= currentUser._id %>">Hello <%= currentUser.username %></a>
+  		  <% } %>
+  		  <a class="nav-link" href="/">Home</a>
+  		  <% if(!currentUser){ %>
+  		    <a class="nav-link" href="/user">Login</a>
+  		  <% } else { %>
+  		  	<a class="nav-link" href="/logout">Logout</a>
+  		  <% } %>
+  		</div>
+  	</div>
+	</div>
+</nav>
+
+<nav class="navbar mynav2">
+<div class="container">
+  <% if(error && error.length > 0){ %>
+    <div class="alert alert-danger" role="alert">
+      <button type="button" data-dismiss="alert" aria-label="Close" class="close" style="outline:none;">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <%= error %>
+    </div>
+  <% } %>
+  <% if(success && success.length > 0){ %>
+    <div class="alert alert-success" role="alert">
+      <button type="button" data-dismiss="alert" aria-label="Close" class="close" style="outline:none;">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <%= success %>
+    </div>
+  <% } %>
+</div>
+</nav>
+
+<div class="container mytab" style="padding: 100px 10px;">
+	<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+  		<li class="nav-item" role="presentation">
+    		<a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Login</a>
+  		</li>
+  		<li class="nav-item" role="presentation">
+    		<a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Sign Up</a>
+  		</li>
+	</ul>
+	<div class="tab-content" id="pills-tabContent">
+  		<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+  			<div class="thumbnail card shadow" style="padding:5%;">
+			<h6><span style="font-size: 30px;">Login </span> if already an user</h6>
+			<br>
+			<form action="login" method="POST">
+				<div class="form-group">
+					<input class="form-control" type="text" name="username" placeholder="username" required>
+				</div>
+				<div class="form-group">
+					<input class="form-control" type="password" name="password" placeholder="password" pattern=".{5,20}" required title="must be of 5 to 20 characters">
+				</div>
+				<div class="form-group">
+					<button class="btn btn-lg btn-primary btn-block">Submit!</button>
+				</div>
+			</form>
+			</div>
+  		</div>
+  		<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+  			<div class="thumbnail card shadow" style="padding:5%;">
+			<h6><span data-toggle="collapse" data-target="#myAdminTab" type="button" aria-expanded="false" aria-controls="myAdminTab">or</span>, <span style="font-size: 30px;"> Sign Up </span> if new here</h6>
+			<br>
+			<form action="register" method="POST">
+				<div class="form-group">
+					<input class="form-control" type="text" name="name" placeholder="name">
+				</div>
+				<div class="form-group">
+					<input class="form-control" type="text" name="username" placeholder="username" required>
+				</div>
+				<div class="form-group">
+					<input class="form-control" type="password" name="password" id="ownerpassword" placeholder="password" pattern=".{5,20}" required title="must be of 5 to 20 characters">
+				</div>
+				<div class="form-group">
+					<input class="form-control" type="password" name="confirm_password" id="confirm_password" placeholder="confirm password" pattern=".{5,20}" required title="must be of 5 to 20 characters" style="margin-bottom: 10px;">
+					<b><span id='ownermessage'></span></b>
+				</div>
+				<div class="collapse" id="myAdminTab">
+					<div class="form-group">
+						<input class="form-control" type="text" name="adminCode" placeholder="Admin Code">
+					</div>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-secondary" data-toggle="collapse" data-target="#otherfields" type="button">if Shop Owner, click here!</button>
+				</div>
+				<div class="collapse" id="otherfields">
+					<div class="form-group">
+						<input class="form-control" type="text" name="shopName" placeholder="shopName">
+					</div>
+					<div class="form-group">
+						<input class="form-control" type="text" name="number" placeholder="number">
+					</div>
+					<div class="form-group">
+						<input class="form-control" type="text" name="delivery" placeholder="delivery charge">
+					</div>
+					<div class="form-group">
+						<input class="form-control" type="text" name="menuImage" placeholder="menuImage">
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<button class="btn btn-lg btn-primary btn-block">Submit!</button>
+				</div>
+			</form>
+			</div>
+  		</div>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+<%- include ('partials/footer'); -%>

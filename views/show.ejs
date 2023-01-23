@@ -1,0 +1,131 @@
+<%- include ('partials/header'); -%>
+
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container">
+    <a href="/">
+      <div class="navbar-brand">Foodie</div>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-ellipsis-v" ></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="navbar-nav  ml-auto mt-2 mt-lg-0">
+        <% if(currentUser){ %>
+          <a class="nav-link active" href="/user/<%= currentUser._id %>">Hello <%= currentUser.username %></a>
+        <% } %>
+        <a class="nav-link" href="/">Home</a>
+        <% if(!currentUser){ %>
+          <a class="nav-link" href="/user">Login</a>
+        <% } else { %>
+          <a class="nav-link" href="/logout">Logout</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<nav class="navbar mynav2">
+<div class="container">
+  <% if(error && error.length > 0){ %>
+    <div class="alert alert-danger" role="alert">
+      <button type="button" data-dismiss="alert" aria-label="Close" class="close" style="outline:none;">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <%= error %>
+    </div>
+  <% } %>
+  <% if(success && success.length > 0){ %>
+    <div class="alert alert-success" role="alert">
+      <button type="button" data-dismiss="alert" aria-label="Close" class="close" style="outline:none;">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <%= success %>
+    </div>
+  <% } %>
+</div>
+</nav>
+
+<div class="container showcon">  
+  <div class="row">
+    <div class="col-md-3 showincon1">
+      <p class="lead"><b><h3 style="color: rgb(100,100,100);"><%= shop.dishName %></h3></b></p>
+      <div class="list-group shadow">
+        <strong>
+          <div class="list-group-item"><i class="fa fa-rupee fa-fw"></i> <%= shop.dishPrice %> + <%= shop.author.delivery %> (delivery)</div>
+          <div class="list-group-item"><i class="fa fa-store fa-fw"></i> 
+            <a href="/user/<%= shop.author.id %>/" style="color:rgb(60,60,60);"><%= shop.author.shopName %></a>
+          </div>
+          <!-- <div class="list-group-item"><i class="fa fa-user fa-fw"></i> <%= shop.author.name %></div> -->
+          <div class="list-group-item"><i class="fa fa-phone fa-fw"></i> 
+            <a href="tel:<%= shop.author.number %>" style="color:rgb(40,40,40);"><%= shop.author.number %></a>
+          </div>
+        </strong>
+      </div>
+    </div>
+
+    <div class="col-md-5 showincon2">
+      <div class="thumbnail incon1">
+        <img class="img-responsive inverted" src="<%= shop.image %>">
+        <!-- <div id="moreimg">
+          <a href="#">
+            <button class="btn btn-primary">
+              More Pics <i class="fa fa-plus"></i>
+            </button>
+          </a>
+        </div> -->
+        <div class="caption-full shadow">
+          <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6 col-6">
+              <i class="fa fa-rupee fa-fw"></i> <%= shop.dishPrice %> + <%= shop.author.delivery %> (delivery)
+            </div>
+            <div class="col-md-6 col-6">
+              <form action="/phone/<%= shop._id %>/like" method="POST" style="display: inline;">
+                    <div class="btn-group">
+                        <% if (currentUser && shop.likes.some(function (like) {
+                            return like.equals(currentUser._id)
+                        })) { %>
+                        <button class="btn btn-sm btn-primary">
+                            <i class="fas fa-thumbs-up"></i> <%= shop.likes.length %>
+                        </button>
+                        <% } else { %>
+                        <button class="btn btn-sm btn-secondary">
+                            <i class="fas fa-thumbs-up"></i> <%= shop.likes.length %>
+                        </button>
+                        <% } %>
+                    </div>
+                </form>
+                <form action="/phone/<%= shop._id %>/dislike" method="POST" style="display: inline;">
+                    <div class="btn-group">
+                        <% if (currentUser && shop.dislikes.some(function (dislike) {
+                            return dislike.equals(currentUser._id)
+                        })) { %>
+                        <button class="btn btn-sm btn-primary">
+                            <i class="fas fa-thumbs-down"></i> <%= shop.dislikes.length %>
+                        </button>
+                        <% } else { %>
+                        <button class="btn btn-sm btn-secondary">
+                            <i class="fas fa-thumbs-down"></i> <%= shop.dislikes.length %>
+                        </button>
+                        <% } %>
+                    </div>
+                </form>
+            </div>
+          </div>
+          <hr>
+          <% if(currentUser && shop.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+            <a class="btn btnedit inverted" href="/phone/<%= shop._id %>/edit"><span>Edit</span> <i class="fa fa-edit"></i></a>
+            <form class="delete-form" action="/phone/<%= shop._id %>?_method=DELETE" method="POST">
+            	<button class="btn btnedit inverted"><span>Delete</span> <i class="fa fa-trash"></i></button>
+            </form>
+          <% } %>
+          <a class="btn btnback inverted" href="/phone">Go Back <i class="fa fa-arrow-circle-left"></i></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+<%- include ('partials/footer'); -%>
